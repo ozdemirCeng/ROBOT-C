@@ -1,0 +1,1327 @@
+<?xml version="1.0"?>
+<robot name="security_patrol_robot">
+
+  <!-- ========================================== -->
+  <!-- MATERIALS                                  -->
+  <!-- ========================================== -->
+  <material name="police_white">
+    <color rgba="0.95 0.95 0.95 1.0"/>
+  </material>
+  <material name="tactical_black">
+    <color rgba="0.25 0.25 0.3 1.0"/>
+  </material>
+  <material name="warning_orange">
+    <color rgba="1.0 0.5 0.0 1.0"/>
+  </material>
+  <material name="police_blue">
+    <color rgba="0.0 0.2 0.8 1.0"/>
+  </material>
+  <material name="chrome_finish">
+    <color rgba="0.8 0.8 0.8 1.0"/>
+  </material>
+  <material name="tire_rubber">
+    <color rgba="0.2 0.2 0.22 1.0"/>
+  </material>
+  <material name="emergency_red">
+    <color rgba="0.9 0.1 0.1 1.0"/>
+  </material>
+  <material name="sensor_green">
+    <color rgba="0.3 0.85 0.3 1.0"/>
+  </material>
+  <material name="sensor_yellow">
+    <color rgba="0.95 0.85 0.2 1.0"/>
+  </material>
+  <material name="sensor_cyan">
+    <color rgba="0.2 0.8 0.9 1.0"/>
+  </material>
+  <material name="camera_gray">
+    <color rgba="0.4 0.4 0.45 1.0"/>
+  </material>
+  <material name="lidar_blue">
+    <color rgba="0.3 0.5 0.8 1.0"/>
+  </material>
+  <material name="mast_silver">
+    <color rgba="0.7 0.72 0.75 1.0"/>
+  </material>
+
+  <!-- ========================================== -->
+  <!-- BASE LINK & CHASSIS                        -->
+  <!-- ========================================== -->
+  <link name="base_link"/>
+
+  <link name="base_footprint">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
+    <origin xyz="0 0 -0.14" rpy="0 0 0"/>
+  </joint>
+
+  <link name="chassis_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/base/husky_base.dae"/>
+      </geometry>
+      <material name="police_white"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.12" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.99 0.67 0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <mass value="50.0"/>
+      <inertia ixx="1.5" ixy="0" ixz="0" iyy="2.5" iyz="0" izz="3.5"/>
+    </inertial>
+  </link>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis_link"/>
+    <origin xyz="0 0 0.14" rpy="0 0 0"/>
+  </joint>
+
+  <!-- FENDERS -->
+  <link name="fenders_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/base/fenders.stl"/>
+      </geometry>
+      <material name="warning_orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <geometry>
+        <box size="1.0 0.75 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.05" ixy="0" ixz="0" iyy="0.05" iyz="0" izz="0.05"/>
+    </inertial>
+  </link>
+
+  <joint name="chassis_to_fenders" type="fixed">
+    <parent link="chassis_link"/>
+    <child link="fenders_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- TOP PLATE -->
+  <link name="top_plate">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/base/husky_top_plate.dae"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.8 0.6 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="3.0"/>
+      <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.15"/>
+    </inertial>
+  </link>
+
+  <joint name="chassis_to_top" type="fixed">
+    <parent link="chassis_link"/>
+    <child link="top_plate"/>
+    <origin xyz="0 0 0.24" rpy="0 0 0"/>
+  </joint>
+
+  <!-- USER RAILS -->
+  <link name="user_rail">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/base/husky_user_rail.dae"/>
+      </geometry>
+      <material name="chrome_finish"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.6 0.1 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <joint name="top_to_rail" type="fixed">
+    <parent link="top_plate"/>
+    <child link="user_rail"/>
+    <origin xyz="0.2 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ========================================== -->
+  <!-- BUMPERS WITH SENSORS                       -->
+  <!-- ========================================== -->
+  <link name="front_bumper">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/base/husky_bumper.dae"/>
+      </geometry>
+      <material name="warning_orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.6 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02"/>
+    </inertial>
+  </link>
+
+  <joint name="front_bumper_joint" type="fixed">
+    <parent link="chassis_link"/>
+    <child link="front_bumper"/>
+    <origin xyz="0.49 0 0.09" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rear_bumper">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 3.14159"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/base/husky_bumper.dae"/>
+      </geometry>
+      <material name="warning_orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.6 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.02"/>
+    </inertial>
+  </link>
+
+  <joint name="rear_bumper_joint" type="fixed">
+    <parent link="chassis_link"/>
+    <child link="rear_bumper"/>
+    <origin xyz="-0.49 0 0.09" rpy="0 0 0"/>
+  </joint>
+
+  <!-- FRONT IR SENSORS (Obstacle Detection) -->
+  <link name="front_ir_left">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/sensors/ir_sensor.dae"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.02 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.02"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="front_bumper_to_ir_left" type="fixed">
+    <parent link="front_bumper"/>
+    <child link="front_ir_left"/>
+    <origin xyz="0.02 0.15 0" rpy="0 0 0.3"/>
+  </joint>
+
+  <link name="front_ir_center">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/sensors/ir_sensor.dae"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.02 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.02"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="front_bumper_to_ir_center" type="fixed">
+    <parent link="front_bumper"/>
+    <child link="front_ir_center"/>
+    <origin xyz="0.02 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="front_ir_right">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/sensors/ir_sensor.dae"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.02 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.02"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="front_bumper_to_ir_right" type="fixed">
+    <parent link="front_bumper"/>
+    <child link="front_ir_right"/>
+    <origin xyz="0.02 -0.15 0" rpy="0 0 -0.3"/>
+  </joint>
+
+  <!-- ========================================== -->
+  <!-- DIFFERENTIAL DRIVE SYSTEM                  -->
+  <!-- 2 Motorlu Arka Tekerlek + 2 Caster Ön Tekerlek -->
+  <!-- ========================================== -->
+
+  <!-- ==================== MOTORLU ARKA TEKERLEKLER (Tahrik) ==================== -->
+  
+  <link name="rear_left_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/wheels/husky_wheel.dae" scale="0.79 0.79 0.79"/>
+      </geometry>
+      <material name="tire_rubber"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.13" length="0.09"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="2.0"/>
+      <inertia ixx="0.012" ixy="0" ixz="0" iyy="0.012" iyz="0" izz="0.022"/>
+    </inertial>
+  </link>
+  <joint name="rl_wheel_joint" type="continuous">
+    <parent link="chassis_link"/>
+    <child link="rear_left_wheel"/>
+    <origin xyz="-0.256 0.2854 -0.005" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.1" friction="0.5"/>
+  </joint>
+
+  <link name="rear_right_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/wheels/husky_wheel.dae" scale="0.79 0.79 0.79"/>
+      </geometry>
+      <material name="tire_rubber"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.13" length="0.09"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="2.0"/>
+      <inertia ixx="0.012" ixy="0" ixz="0" iyy="0.012" iyz="0" izz="0.022"/>
+    </inertial>
+  </link>
+  <joint name="rr_wheel_joint" type="continuous">
+    <parent link="chassis_link"/>
+    <child link="rear_right_wheel"/>
+    <origin xyz="-0.256 -0.2854 -0.005" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.1" friction="0.5"/>
+  </joint>
+
+  <!-- ==================== CASTER (SARHOŞ) ÖN TEKERLEKLER ==================== -->
+  <!-- Caster tekerlekler iki eklemden oluşur:                                  -->
+  <!-- 1. Yaw ekseni (Z): Dikey eksende serbest dönüş (yön değiştirme)         -->
+  <!-- 2. Roll ekseni (Y): Tekerleğin kendi ekseni etrafında yuvarlanması      -->
+  <!-- ======================================================================== -->
+
+  <!-- SOL ÖN CASTER -->
+  <!-- Caster pivot (dikey eksen - yaw) -->
+  <link name="front_left_caster_pivot">
+    <visual>
+      <origin xyz="0 0 -0.02" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.04"/>
+      </geometry>
+      <material name="chrome_finish"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.02" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.02"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="fl_caster_yaw_joint" type="continuous">
+    <parent link="chassis_link"/>
+    <child link="front_left_caster_pivot"/>
+    <origin xyz="0.256 0.2854 0.025" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.01" friction="0.0"/>
+  </joint>
+
+  <!-- Caster tekerlek (yatay eksen - roll) -->
+  <link name="front_left_caster_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/wheels/husky_wheel.dae" scale="0.60 0.60 0.60"/>
+      </geometry>
+      <material name="tire_rubber"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.10" length="0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.8"/>
+      <inertia ixx="0.003" ixy="0" ixz="0" iyy="0.003" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="fl_caster_roll_joint" type="continuous">
+    <parent link="front_left_caster_pivot"/>
+    <child link="front_left_caster_wheel"/>
+    <origin xyz="0.02 0 -0.065" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.01" friction="0.0"/>
+  </joint>
+
+  <!-- SAĞ ÖN CASTER -->
+  <!-- Caster pivot (dikey eksen - yaw) -->
+  <link name="front_right_caster_pivot">
+    <visual>
+      <origin xyz="0 0 -0.02" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.04"/>
+      </geometry>
+      <material name="chrome_finish"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.02" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.02"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="fr_caster_yaw_joint" type="continuous">
+    <parent link="chassis_link"/>
+    <child link="front_right_caster_pivot"/>
+    <origin xyz="0.256 -0.2854 0.025" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.01" friction="0.0"/>
+  </joint>
+
+  <!-- Caster tekerlek (yatay eksen - roll) -->
+  <link name="front_right_caster_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/wheels/husky_wheel.dae" scale="0.60 0.60 0.60"/>
+      </geometry>
+      <material name="tire_rubber"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.10" length="0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.8"/>
+      <inertia ixx="0.003" ixy="0" ixz="0" iyy="0.003" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+  <joint name="fr_caster_roll_joint" type="continuous">
+    <parent link="front_right_caster_pivot"/>
+    <child link="front_right_caster_wheel"/>
+    <origin xyz="0.02 0 -0.065" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.01" friction="0.0"/>
+  </joint>
+
+  <!-- ========================================== -->
+  <!-- IMU SENSOR (On Chassis)                    -->
+  <!-- ========================================== -->
+  <link name="imu_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/sensors/imu_sensor.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="sensor_green"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.03 0.03 0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  <joint name="chassis_to_imu" type="fixed">
+    <parent link="chassis_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.2" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ========================================== -->
+  <!-- 3-LEVEL VERTICAL SENSOR MAST                -->
+  <!-- Referans: SIRD-3000S / Husky Observer       -->
+  <!-- Basit dikey silindir yapısı                 -->
+  <!-- 3 seviye: mast_base, mast_mid, mast_top     -->
+  <!-- ========================================== -->
+
+  <!-- ==================== MAST STRUCTURE (3 Level - From V2) ==================== -->
+  
+  <!-- MAST BASE - Level 1 (Silver vertical cylinder) -->
+  <link name="mast_base_link">
+    <visual>
+      <origin xyz="0 0 0.12" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.24"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.12" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.24"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0.12"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.002"/>
+    </inertial>
+  </link>
+  <joint name="top_to_mast_base" type="fixed">
+    <parent link="top_plate"/>
+    <child link="mast_base_link"/>
+    <origin xyz="0.05 0 0.01" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 360 LIDAR (On mast base level) -->
+  <link name="lidar_360_link">
+    <!-- LiDAR base -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.03"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <!-- LiDAR rotating top -->
+    <visual>
+      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.030" length="0.02"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="mast_base_to_lidar360" type="fixed">
+    <parent link="mast_base_link"/>
+    <child link="lidar_360_link"/>
+    <origin xyz="0.04 0 0.22" rpy="0 0 0"/>
+  </joint>
+
+  <!-- MAST MID - Level 2 (Thinner cylinder) -->
+  <link name="mast_mid_link">
+    <visual>
+      <origin xyz="0 0 0.10" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.020" length="0.20"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.10" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.020" length="0.20"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.7"/>
+      <origin xyz="0 0 0.10"/>
+      <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="mast_base_to_mast_mid" type="fixed">
+    <parent link="mast_base_link"/>
+    <child link="mast_mid_link"/>
+    <origin xyz="0 0 0.24" rpy="0 0 0"/>
+  </joint>
+
+  <!-- DEPTH CAMERA (RealSense style on mast mid) -->
+  <link name="depth_camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.025 0.09 0.025"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    <!-- IR emitters (left and right) -->
+    <visual>
+      <origin xyz="0.012 0.035 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.005"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <visual>
+      <origin xyz="0.012 -0.035 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.005"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <!-- RGB camera (center) -->
+    <visual>
+      <origin xyz="0.012 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.006" length="0.005"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.025 0.09 0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.072"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  <joint name="mast_mid_to_depth_camera" type="fixed">
+    <parent link="mast_mid_link"/>
+    <child link="depth_camera_link"/>
+    <origin xyz="0.03 0 0.15" rpy="0 0 0"/>
+  </joint>
+
+  <!-- MAST TOP - Level 3 -->
+  <link name="mast_top_link">
+    <visual>
+      <origin xyz="0 0 0.08" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.018" length="0.16"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.08" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.018" length="0.16"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0.08"/>
+      <inertia ixx="0.003" ixy="0" ixz="0" iyy="0.003" iyz="0" izz="0.0005"/>
+    </inertial>
+  </link>
+  <joint name="mast_mid_to_mast_top" type="fixed">
+    <parent link="mast_mid_link"/>
+    <child link="mast_top_link"/>
+    <origin xyz="0 0 0.20" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== SENSOR HEAD (Top of mast with cameras - From V2) ==================== -->
+  <link name="sensor_head_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.10 0.12 0.06"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.10 0.12 0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="mast_top_to_sensor_head" type="revolute">
+    <parent link="mast_top_link"/>
+    <child link="sensor_head_link"/>
+    <origin xyz="0 0 0.19" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="10" velocity="1.0"/>
+  </joint>
+
+  <!-- ==================== CAMERAS ON SENSOR HEAD (Cylindrical lens - From V2) ==================== -->
+  <!-- Left Camera (Cylindrical lens housing) -->
+  <link name="camera_left_link">
+    <visual>
+      <origin xyz="0.02 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.022" length="0.04"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <!-- Camera lens -->
+    <visual>
+      <origin xyz="0.045 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.01"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0.02 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.022" length="0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.00005" ixy="0" ixz="0" iyy="0.00005" iyz="0" izz="0.00005"/>
+    </inertial>
+  </link>
+  <joint name="sensor_head_to_camera_left" type="fixed">
+    <parent link="sensor_head_link"/>
+    <child link="camera_left_link"/>
+    <origin xyz="0.02 0.04 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Right Camera (Cylindrical lens housing) -->
+  <link name="camera_right_link">
+    <visual>
+      <origin xyz="0.02 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.022" length="0.04"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <!-- Camera lens -->
+    <visual>
+      <origin xyz="0.045 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.01"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0.02 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.022" length="0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.00005" ixy="0" ixz="0" iyy="0.00005" iyz="0" izz="0.00005"/>
+    </inertial>
+  </link>
+  <joint name="sensor_head_to_camera_right" type="fixed">
+    <parent link="sensor_head_link"/>
+    <child link="camera_right_link"/>
+    <origin xyz="0.02 -0.04 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== BEACON LIGHT (Blue rotating light on top - From V2) ==================== -->
+  <link name="beacon_light_link">
+    <!-- Beacon base -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.02"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <!-- Blue light dome -->
+    <visual>
+      <origin xyz="0 0 0.03" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.033" length="0.04"/>
+      </geometry>
+      <material name="police_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.035" length="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.15"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="sensor_head_to_beacon" type="fixed">
+    <parent link="sensor_head_link"/>
+    <child link="beacon_light_link"/>
+    <origin xyz="0 0 0.055" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== ANTENNA (Vertical antenna next to beacon - From V2) ==================== -->
+  <link name="antenna_link">
+    <visual>
+      <origin xyz="0 0 0.08" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.005" length="0.16"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <!-- Antenna base -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.02"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.08" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.16"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.03"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="sensor_head_to_antenna" type="fixed">
+    <parent link="sensor_head_link"/>
+    <child link="antenna_link"/>
+    <origin xyz="-0.03 0.05 0.04" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== ULTRASONIC SENSORS (On mast base - From V2) ==================== -->
+  <link name="ultrasonic_front_link">
+    <visual>
+      <origin xyz="0.01 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.02"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    <inertial>
+      <mass value="0.02"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="mast_base_to_ultrasonic_front" type="fixed">
+    <parent link="mast_base_link"/>
+    <child link="ultrasonic_front_link"/>
+    <origin xyz="0.03 0 0.10" rpy="0 0 0"/>
+  </joint>
+
+  <link name="ultrasonic_left_link">
+    <visual>
+      <origin xyz="0 0.01 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.02"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    <inertial>
+      <mass value="0.02"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="mast_base_to_ultrasonic_left" type="fixed">
+    <parent link="mast_base_link"/>
+    <child link="ultrasonic_left_link"/>
+    <origin xyz="0 0.03 0.10" rpy="0 0 0"/>
+  </joint>
+
+  <link name="ultrasonic_right_link">
+    <visual>
+      <origin xyz="0 -0.01 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.02"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    <inertial>
+      <mass value="0.02"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="mast_base_to_ultrasonic_right" type="fixed">
+    <parent link="mast_base_link"/>
+    <child link="ultrasonic_right_link"/>
+    <origin xyz="0 -0.03 0.10" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== THERMAL CAMERA (On mast mid - From V2) ==================== -->
+  <link name="thermal_camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.035 0.035 0.025"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <!-- Thermal lens -->
+    <visual>
+      <origin xyz="0.02 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.008"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.035 0.035 0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.08"/>
+      <inertia ixx="0.00003" ixy="0" ixz="0" iyy="0.00003" iyz="0" izz="0.00003"/>
+    </inertial>
+  </link>
+  <joint name="mast_mid_to_thermal" type="fixed">
+    <parent link="mast_mid_link"/>
+    <child link="thermal_camera_link"/>
+    <origin xyz="0.03 0 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== ENVIRONMENTAL SENSORS (From V2) ==================== -->
+  <link name="environmental_sensor_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.03 0.02"/>
+      </geometry>
+      <material name="police_white"/>
+    </visual>
+    <!-- Sensor vents -->
+    <visual>
+      <origin xyz="0.022 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.002 0.02 0.015"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.03 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00002" ixy="0" ixz="0" iyy="0.00002" iyz="0" izz="0.00002"/>
+    </inertial>
+  </link>
+  <joint name="mast_mid_to_environmental" type="fixed">
+    <parent link="mast_mid_link"/>
+    <child link="environmental_sensor_link"/>
+    <origin xyz="-0.03 0 0.10" rpy="0 0 3.14159"/>
+  </joint>
+
+  <!-- ==================== MICROPHONE ARRAY (From V2) ==================== -->
+  <link name="microphone_array_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.008"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <inertial>
+      <mass value="0.015"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="mast_mid_to_microphone" type="fixed">
+    <parent link="mast_mid_link"/>
+    <child link="microphone_array_link"/>
+    <origin xyz="0 0.03 0.18" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== SIREN (On left side of chassis - From V2) ==================== -->
+  <link name="siren_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.03" length="0.05"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    <!-- Speaker grille -->
+    <visual>
+      <origin xyz="0 0.03 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.005"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0002"/>
+    </inertial>
+  </link>
+  <joint name="top_to_siren" type="fixed">
+    <parent link="top_plate"/>
+    <child link="siren_link"/>
+    <origin xyz="0.10 0.22 0.04" rpy="1.5708 0 0"/>
+  </joint>
+
+  <!-- ==================== GPS Module (From V2) ==================== -->
+  <link name="gps_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.025" length="0.012"/>
+      </geometry>
+      <material name="police_white"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.025" length="0.012"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.03"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  <joint name="top_to_gps" type="fixed">
+    <parent link="top_plate"/>
+    <child link="gps_link"/>
+    <origin xyz="-0.18 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== FRONT CAMERA (Fisheye style - From V2) ==================== -->
+  <link name="front_camera_link">
+    <!-- Camera housing -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.06 0.04"/>
+      </geometry>
+      <material name="camera_gray"/>
+    </visual>
+    <!-- Camera lens (dome style) -->
+    <visual>
+      <origin xyz="0.025 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <sphere radius="0.018"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.06 0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.00005" ixy="0" ixz="0" iyy="0.00005" iyz="0" izz="0.00005"/>
+    </inertial>
+  </link>
+  <joint name="top_to_front_camera" type="fixed">
+    <parent link="top_plate"/>
+    <child link="front_camera_link"/>
+    <origin xyz="0.24 0.12 0.04" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ==================== PROXIMITY SENSORS (On chassis - From V2) ==================== -->
+  <link name="proximity_front_left_link">
+    <visual>
+      <origin xyz="0.01 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.015"/>
+      </geometry>
+      <material name="emergency_red"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="chassis_to_prox_fl" type="fixed">
+    <parent link="front_bumper"/>
+    <child link="proximity_front_left_link"/>
+    <origin xyz="0.02 0.15 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="proximity_front_right_link">
+    <visual>
+      <origin xyz="0.01 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.015"/>
+      </geometry>
+      <material name="emergency_red"/>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+  <joint name="chassis_to_prox_fr" type="fixed">
+    <parent link="front_bumper"/>
+    <child link="proximity_front_right_link"/>
+    <origin xyz="0.02 -0.15 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ================================================================ -->
+  <!-- PROFESSIONAL CONTROL PANEL - Exact match to reference image    -->
+  <!-- Sloped front, tall back, black trim edges                      -->
+  <!-- ================================================================ -->
+  
+  <!-- Main Panel Housing -->
+  <link name="control_panel_link">
+    <!-- Back wall (tall vertical section) -->
+    <visual>
+      <origin xyz="0.06 0 0.045" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.015 0.50 0.09"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    
+    <!-- Bottom plate (horizontal base) -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.18 0.50 0.015"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    
+    <!-- Sloped top/front panel (LONGER slope for screen) -->
+    <visual>
+      <origin xyz="-0.02 0 0.048" rpy="0 -0.40 0"/>
+      <geometry>
+        <box size="0.20 0.50 0.018"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    
+    <!-- Left side triangular wedge plate -->
+    <visual>
+      <origin xyz="0.0 0.242 0.007" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/panel_wedge_left.stl"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    
+    <!-- Right side triangular wedge plate -->
+    <visual>
+      <origin xyz="0.0 -0.242 0.007" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://security_robot/meshes/panel_wedge_right.stl"/>
+      </geometry>
+      <material name="mast_silver"/>
+    </visual>
+    
+    <collision>
+      <geometry>
+        <box size="0.18 0.50 0.09"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="3.0"/>
+      <inertia ixx="0.015" ixy="0" ixz="0" iyy="0.015" iyz="0" izz="0.015"/>
+    </inertial>
+  </link>
+  <joint name="top_to_control_panel" type="fixed">
+    <parent link="top_plate"/>
+    <child link="control_panel_link"/>
+    <origin xyz="-0.32 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Emergency Stop Button (on sloped surface, left side) -->
+  <link name="estop_button_link">
+    <!-- Yellow safety base -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.022" length="0.012"/>
+      </geometry>
+      <material name="sensor_yellow"/>
+    </visual>
+    <!-- Red mushroom button -->
+    <visual>
+      <origin xyz="0 0 0.014" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.018" length="0.016"/>
+      </geometry>
+      <material name="emergency_red"/>
+    </visual>
+    <!-- Dome top -->
+    <visual>
+      <origin xyz="0 0 0.024" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.016"/>
+      </geometry>
+      <material name="emergency_red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.022" length="0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  <joint name="panel_to_estop" type="fixed">
+    <parent link="control_panel_link"/>
+    <child link="estop_button_link"/>
+    <origin xyz="-0.02 -0.12 0.062" rpy="0 -0.40 0"/>
+  </joint>
+
+  <!-- LCD Touchscreen Display - FLAT ON SLOPE, same angle as slope panel -->
+  <link name="lcd_screen_link">
+    <!-- Black bezel frame - horizontal landscape -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.12 0.18 0.010"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <!-- Screen area (green display) -->
+    <visual>
+      <origin xyz="0 0 0.004" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.105 0.165 0.002"/>
+      </geometry>
+      <material name="sensor_green"/>
+    </visual>
+    <!-- Status indicator bar on screen -->
+    <visual>
+      <origin xyz="0.032 -0.055 0.005" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.020 0.045 0.001"/>
+      </geometry>
+      <material name="police_white"/>
+    </visual>
+    <!-- Battery icon -->
+    <visual>
+      <origin xyz="0.038 0.060 0.005" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.016 0.035 0.001"/>
+      </geometry>
+      <material name="sensor_green"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.12 0.18 0.010"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.3"/>
+      <inertia ixx="0.0002" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0002"/>
+    </inertial>
+  </link>
+  <joint name="panel_to_lcd" type="fixed">
+    <parent link="control_panel_link"/>
+    <child link="lcd_screen_link"/>
+    <origin xyz="-0.02 0.12 0.062" rpy="0 -0.40 0"/>
+  </joint>
+
+  <!-- USB Ports (on front face, below screen area) -->
+  <link name="usb_ports_link">
+    <!-- Port housing -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.012 0.055 0.016"/>
+      </geometry>
+      <material name="tactical_black"/>
+    </visual>
+    <!-- USB Port 1 (blue) -->
+    <visual>
+      <origin xyz="0.004 0.016 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.006 0.013 0.005"/>
+      </geometry>
+      <material name="police_blue"/>
+    </visual>
+    <!-- USB Port 2 (blue) -->
+    <visual>
+      <origin xyz="0.004 -0.016 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.006 0.013 0.005"/>
+      </geometry>
+      <material name="police_blue"/>
+    </visual>
+    <inertial>
+      <mass value="0.02"/>
+      <inertia ixx="0.000005" ixy="0" ixz="0" iyy="0.000005" iyz="0" izz="0.000005"/>
+    </inertial>
+  </link>
+  <joint name="panel_to_usb" type="fixed">
+    <parent link="control_panel_link"/>
+    <child link="usb_ports_link"/>
+    <origin xyz="-0.055 0.10 0.018" rpy="0 0 0"/>
+  </joint>
+
+</robot>
